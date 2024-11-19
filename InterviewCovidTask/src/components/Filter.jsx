@@ -2,33 +2,113 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilteredState } from "../redux/covidSlice";
 import styled from "styled-components";
+import { useState, useEffect } from 'react';
+
 
 const Filter = () => {
     const dispatch = useDispatch();
     const covidData = useSelector((state) => state.covid.data);
     const filteredState = useSelector((state) => state.covid.filteredState);
 
-    const handleChange = (event) => {
-        dispatch(setFilteredState(event.target.value));
-    };
+    // const handleChange = (event) => {
+    //     dispatch(setFilteredState(event.target.value));
+    // };
 
-    const selectedStateData = filteredState
-        ? covidData.find((item) => item.state === filteredState)
-        : null;
+    // const selectedStateData = filteredState
+    //     ? covidData.find((item) => item.state === filteredState)
+    //     : null;
+
+// Calculate total data for all states
+  const totalData = covidData.reduce(
+    (totals, item) => ({
+      active: totals.active + (item.active || 0),
+      recovered: totals.recovered + (item.recovered || 0),
+      deaths: totals.deaths + (item.deaths || 0),
+    }),
+    { active: 0, recovered: 0, deaths: 0 }
+  );
+
+
+
+
+const [selectedStateData, setSelectedStateData] = useState(null);
+const [isAnimating, setIsAnimating] = useState(false);
+const [animationInterval, setAnimationInterval] = useState(null);
+
+useEffect(() => {
+  if (filteredState) {
+    const stateData = covidData.find((item) => item.state === filteredState);
+    setSelectedStateData(stateData);
+  } else {
+    setSelectedStateData(null);
+  }
+}, [filteredState, covidData]);
+
+
+ // Handle dropdown change
+ const handleChange = (event) => {
+    const selectedState = event.target.value;
+    dispatch(setFilteredState(selectedState));
+  };
+
+  // Start or stop animation
+  const toggleAnimation = () => {
+    if (isAnimating) {
+      stopAnimation();
+    } else {
+      startAnimation();
+    }
+  };
+
+  // Start animation
+  const startAnimation = () => {
+    setIsAnimating(true);
+    let index = 0;
+
+    const interval = setInterval(() => {
+      if (index >= covidData.length) {
+        clearInterval(interval);
+        setIsAnimating(false);
+        resetDropdown(); // Reset the dropdown to default state
+        return;
+      }
+      dispatch(setFilteredState(covidData[index].state));
+      index++;
+    }, 2000); // Adjust speed (1000ms = 1 second)
+
+    setAnimationInterval(interval);
+  };
+
+  // Stop animation
+  const stopAnimation = () => {
+    if (animationInterval) {
+      clearInterval(animationInterval);
+      setAnimationInterval(null);
+    }
+    setIsAnimating(false);
+  };
+    // Reset the dropdown to default state
+    const resetDropdown = () => {
+        dispatch(setFilteredState("")); // Clear the selected state in Redux
+      };
 
     return (
         <>
       <Header>Select States To View Covid Cases</Header> 
         <FilterContainer>
             <Card>
-                <select onChange={handleChange}>
+                <select onChange={handleChange} value={filteredState || ''}>
                     <option value="">All States</option>
                     {covidData.map((item) => (
                         <option key={item.state} value={item.state}>
                             {item.state}
                         </option>
                     ))}
-                </select>
+                </select>&nbsp;
+                <AnimatedButton onClick={toggleAnimation}>
+            {isAnimating ? "Stop" : "Animate"}
+          </AnimatedButton>
+
                 {selectedStateData ? (
                     <>
                         <StateName>{selectedStateData.state}</StateName>
@@ -46,7 +126,20 @@ const Filter = () => {
                         </DataRow>
                     </>
                 ) : (
-                    <Placeholder>Select a state to view data</Placeholder>
+                    // <Placeholder>Select a state to view data</Placeholder>
+                    <>
+                    <StateName>All States</StateName>
+                    <DataRow>
+                      <DataLabel>Active:</DataLabel> <DataValue>{totalData.active}</DataValue>
+                    </DataRow>
+                    <DataRow>
+                      <DataLabel>Recovered:</DataLabel> <DataValue>{totalData.recovered}</DataValue>
+                    </DataRow>
+                    <DataRow>
+                      <DataLabel>Deaths:</DataLabel> <DataValue>{totalData.deaths}</DataValue>
+                    </DataRow>
+                  </>
+        
                 )}
             </Card>
             {/* <Header>Select States</Header> */}
@@ -122,4 +215,22 @@ const DataValue = styled.span`
 const Placeholder = styled.p`
     text-align: center;
     color: #666;
+`;
+const AnimatedButton = styled.button`
+  background-color: ${(props) => (props.disabled ? "#ddd" : "#007bff")};
+  color: ${(props) => (props.disabled ? "#aaa" : "#fff")};
+  font-size: 14px;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: ${(props) => (props.disabled ? "#ddd" : "#0056b3")};
+  }
+
+  &:active {
+    background-color: ${(props) => (props.disabled ? "#ddd" : "#004085")};
+  }
 `;

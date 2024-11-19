@@ -54,7 +54,7 @@ const App = () => {
       <ChartContainer>
         <MapView 
         // data={data} 
-        selectedStateData={selectedStateData}
+        selectedStateData={selectedStateData} covidData={covidData}
         />
         </ChartContainer>
       </BottomSection>

@@ -34,9 +34,11 @@
 
 
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup,LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-
+import "leaflet.fullscreen";
+import "leaflet.fullscreen/Control.FullScreen.css"; // Import the Fullscreen control styles
+import "leaflet/dist/leaflet.css";
 
 
 const stateCoordinates = {
@@ -73,33 +75,96 @@ const stateCoordinates = {
   "Andaman and Nicobar Islands": { lat: 11.7401, lng: 92.6586 },
 };
 
-const MapView = ({ selectedStateData }) => {
-  // if (!selectedStateData ) return <div>No data available for the map</div>;
+// const MapView = ({ selectedStateData }) => {
+//   // if (!selectedStateData ) return <div>No data available for the map</div>;
 
-  // Get the coordinates for the selected state
-  // const { lat, lng } = stateCoordinates[selectedStateData.state] || { lat: 20.5937, lng: 78.9629 };
+//   // Get the coordinates for the selected state
+//   // const { lat, lng } = stateCoordinates[selectedStateData.state] || { lat: 20.5937, lng: 78.9629 };
 
-    // If no data is available, show an empty map
-  const { lat, lng } = selectedStateData
-    ? stateCoordinates[selectedStateData.state] || { lat: 20.5937, lng: 78.9629 }
-    : { lat: 20.5937, lng: 78.9629 }; // Default center (India)
+//     // If no data is available, show an empty map
+//   const { lat, lng } = selectedStateData
+//     ? stateCoordinates[selectedStateData.state] || { lat: 20.5937, lng: 78.9629 }
+//     : { lat: 20.5937, lng: 78.9629 }; // Default center (India)
+
+//   return (
+//     <MapContainer center={[lat, lng]} zoom={5} style={{ height: '400px', width: '100%' }}>
+//       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+//       {selectedStateData && (
+//       <Marker position={[lat, lng]}>
+//         <Popup>
+//           <strong>{selectedStateData.state}</strong>
+//           <br />
+//           Active: {selectedStateData.active}
+//           <br />
+//           Recovered: {selectedStateData.recovered}
+//           <br />
+//           Deaths: {selectedStateData.deaths}
+//         </Popup>
+//       </Marker>
+//           )}
+//     </MapContainer>
+//   );
+// };
+
+// export default MapView;
+
+
+
+const MapView = ({ selectedStateData, covidData }) => {
+  const markers = selectedStateData
+    ? [
+        {
+          state: selectedStateData.state,
+          lat: stateCoordinates[selectedStateData.state]?.lat || 20.5937,
+          lng: stateCoordinates[selectedStateData.state]?.lng || 78.9629,
+          active: selectedStateData.active,
+          recovered: selectedStateData.recovered,
+          deaths: selectedStateData.deaths,
+        },
+      ]
+    : covidData
+        .filter((item) => stateCoordinates[item.state]) // Include only states with coordinates
+        .map((item) => ({
+          state: item.state,
+          lat: stateCoordinates[item.state]?.lat,
+          lng: stateCoordinates[item.state]?.lng,
+          active: item.active,
+          recovered: item.recovered,
+          deaths: item.deaths,
+        }));
+        
 
   return (
-    <MapContainer center={[lat, lng]} zoom={5} style={{ height: '400px', width: '100%' }}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {selectedStateData && (
-      <Marker position={[lat, lng]}>
-        <Popup>
-          <strong>{selectedStateData.state}</strong>
-          <br />
-          Active: {selectedStateData.active}
-          <br />
-          Recovered: {selectedStateData.recovered}
-          <br />
-          Deaths: {selectedStateData.deaths}
-        </Popup>
-      </Marker>
-          )}
+    <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: "400px", width: "100%" }}  fullscreenControl={true} >
+      {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+      <LayersControl position="topright">
+        {/* Street Layer */}
+        <LayersControl.BaseLayer checked name="Street View">
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        </LayersControl.BaseLayer>
+
+        {/* Satellite Layer */}
+        <LayersControl.BaseLayer name="Satellite View">
+          <TileLayer
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          />
+        </LayersControl.BaseLayer>
+      </LayersControl>
+      {markers.map((marker, index) => (
+        <Marker key={index} position={[marker.lat, marker.lng]}>
+          <Popup>
+            <strong>{marker.state}</strong>
+            <br />
+            Active: {marker.active}
+            <br />
+            Recovered: {marker.recovered}
+            <br />
+            Deaths: {marker.deaths}
+          </Popup>
+        </Marker>
+      ))}
     </MapContainer>
   );
 };
