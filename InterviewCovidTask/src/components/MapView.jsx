@@ -5,7 +5,10 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup,LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import "leaflet.fullscreen";
-import "leaflet.fullscreen/Control.FullScreen.css"; 
+import "leaflet.fullscreen/Control.FullScreen.css";
+import { useEffect } from 'react';
+
+
 
 
 const stateCoordinates = {
@@ -78,6 +81,18 @@ const stateCoordinates = {
 
 
 const MapView = ({ selectedStateData, covidData }) => {
+  
+useEffect(() => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', () => {
+      const map = document.querySelector('.leaflet-container');
+      if (map) {
+        map._leaflet_id && map._map.invalidateSize();
+      }
+    });
+  }
+}, []);
+
   const markers = selectedStateData
     ? [
         {
