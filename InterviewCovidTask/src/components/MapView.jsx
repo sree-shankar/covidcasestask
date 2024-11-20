@@ -5,10 +5,17 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup,LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import "leaflet.fullscreen";
-import "leaflet.fullscreen/Control.FullScreen.css";
-import { useEffect } from 'react';
+import "leaflet.fullscreen/Control.FullScreen.css"; 
+import L from 'leaflet';
+import markerIconPng from 'leaflet/dist/images/marker-icon.png';
+import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
 
-
+const customIcon = L.icon({
+  iconUrl: markerIconPng,
+  shadowUrl: markerShadowPng,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
 
 
 const stateCoordinates = {
@@ -81,18 +88,6 @@ const stateCoordinates = {
 
 
 const MapView = ({ selectedStateData, covidData }) => {
-  
-useEffect(() => {
-  if (typeof window !== 'undefined') {
-    window.addEventListener('resize', () => {
-      const map = document.querySelector('.leaflet-container');
-      if (map) {
-        map._leaflet_id && map._map.invalidateSize();
-      }
-    });
-  }
-}, []);
-
   const markers = selectedStateData
     ? [
         {
@@ -135,7 +130,7 @@ useEffect(() => {
         </LayersControl.BaseLayer>
       </LayersControl>
       {markers.map((marker, index) => (
-        <Marker key={index} position={[marker.lat, marker.lng]}>
+        <Marker key={index} position={[marker.lat, marker.lng]}  icon={customIcon}>
           <Popup>
             <strong>{marker.state}</strong>
             <br />
