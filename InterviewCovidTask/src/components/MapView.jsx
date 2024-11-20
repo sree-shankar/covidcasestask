@@ -15,6 +15,8 @@ const customIcon = L.icon({
   shadowUrl: markerShadowPng,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
+    popupAnchor: [0, -41], // Position of the popup relative to the icon
+
 });
 
 

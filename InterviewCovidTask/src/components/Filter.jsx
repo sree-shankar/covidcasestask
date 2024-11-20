@@ -219,7 +219,7 @@ const Placeholder = styled.p`
 const AnimatedButton = styled.button`
   background-color: ${(props) => (props.disabled ? "#ddd" : "#007bff")};
   color: ${(props) => (props.disabled ? "#aaa" : "#fff")};
-  font-size: 14px;
+  font-size: 13px;
   padding: 10px 10px;
   border: none;
   border-radius: 5px;

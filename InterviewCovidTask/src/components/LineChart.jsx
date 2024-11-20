@@ -6,26 +6,7 @@ import Plot from 'react-plotly.js';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-// Styled container for responsiveness
-const ChartContainer = styled.div`
-  width: 100%;
-  max-width: 800px;
-  /* margin: 0 auto; 
-  padding: 0px; */
 
-  @media (max-width: 768px) {
-    max-width: 100%; /* Adjust for tablets and smaller devices */
-  }
-
-  @media (max-width: 480px) {
-    max-width: 100%; /* Full width for mobile devices */
-  }
-
-  canvas {
-    width: 100% !important; /* Ensure canvas scales properly */
-    height: auto !important;
-  }
-`;
 
 const LineChart = () => {
   const { data, filteredState } = useSelector((state) => state.covid);
@@ -65,3 +46,26 @@ const LineChart = () => {
 };
 
 export default LineChart;
+
+
+
+// Styled container for responsiveness
+const ChartContainer = styled.div`
+  width: 100%;
+  max-width: 800px;
+  /* margin: 0 auto; 
+  padding: 0px; */
+
+  @media (max-width: 768px) {
+    max-width: 100%; /* Adjust for tablets and smaller devices */
+  }
+
+  @media (max-width: 480px) {
+    max-width: 100%; /* Full width for mobile devices */
+  }
+
+  canvas {
+    width: 100% !important; /* Ensure canvas scales properly */
+    height: auto !important;
+  }
+`;
