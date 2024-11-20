@@ -1,44 +1,11 @@
-// import React from 'react';
-// import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-// import 'leaflet/dist/leaflet.css';
 
-// const MapView = ({ data }) => {
-//   if (!data || !data.length) return <div>No data available for the map</div>; // Guard against undefined or empty data
-
-//   return (
-//     <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: '400px', width: '100%' }}>
-//       <TileLayer
-//         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//       />
-//       {data.map((item, index) => (
-//         <Marker
-//           key={index}
-//           position={[item.lat || 20.5937, item.lng || 78.9629]} // Fallback coordinates
-//         >
-//           <Popup>
-//             <strong>{item.state}</strong>
-//             <br />
-//             Active: {item.active}
-//             <br />
-//             Recovered: {item.recovered}
-//             <br />
-//             Deaths: {item.deaths}
-//           </Popup>
-//         </Marker>
-//       ))}
-//     </MapContainer>
-//   );
-// };
-
-// export default MapView;
 
 
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup,LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import "leaflet.fullscreen";
-import "leaflet.fullscreen/Control.FullScreen.css"; // Import the Fullscreen control styles
-import "leaflet/dist/leaflet.css";
+import "leaflet.fullscreen/Control.FullScreen.css"; 
 
 
 const stateCoordinates = {

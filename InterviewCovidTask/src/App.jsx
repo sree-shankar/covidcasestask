@@ -37,26 +37,26 @@ const App = () => {
   
          <TopSection>
       <LeftSection>
-        <ChartContainer>
+        {/* <ChartContainer> */}
           <PieChart />
-        </ChartContainer>
+        {/* </ChartContainer> */}
       </LeftSection>
       <CenterSection>
         <Filter />
       </CenterSection>
       <RightSection>
-        <ChartContainer>
+        {/* <ChartContainer> */}
           <LineChart />
-        </ChartContainer>
+        {/* </ChartContainer> */}
       </RightSection>
     </TopSection>
       <BottomSection>
-      <ChartContainer>
+      {/* <ChartContainer> */}
         <MapView 
         // data={data} 
         selectedStateData={selectedStateData} covidData={covidData}
         />
-        </ChartContainer>
+        {/* </ChartContainer> */}
       </BottomSection>
       
     </MainContainer>
@@ -173,7 +173,7 @@ const CenterSection = styled.div`
   margin-top:100px;
 
   @media (max-width: 768px) {
-    width: 100%;
+    /* width: 100%; */
     margin-bottom: 20px;
   }
 `;
